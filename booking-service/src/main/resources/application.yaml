@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: booking-offering
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/services-Db?createDatabaseIfNotExist=true
+    username: root
+    password: root
+
+  jpa:
+    show-sql: true
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect:
+        format_sql: true
+
+server:
+  port: 5003
