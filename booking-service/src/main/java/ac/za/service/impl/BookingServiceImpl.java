@@ -97,7 +97,7 @@ public class BookingServiceImpl implements BookingService {
     public Booking getBookingById(Long id) throws Exception {
         Booking booking = bookingRepository.findById(id).orElse(null);
         if (booking == null) {
-            throw new Exception("Booking bor found");
+            throw new Exception("Booking not found");
         }
         return booking;
     }
