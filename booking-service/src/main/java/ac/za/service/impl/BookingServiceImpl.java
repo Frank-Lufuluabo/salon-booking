@@ -35,7 +35,7 @@ public class BookingServiceImpl implements BookingService {
 
         Boolean isSlotAvailable = isTimeSlotAvailable(salon, bookingStartTime, bookingEndTime);
 
-        int totalPrince = serviceDTOSet.stream().mapToInt(ServiceDTO::getPrice).sum();
+        int totalPrice = serviceDTOSet.stream().mapToInt(ServiceDTO::getPrice).sum();
 
         Set<Long> idList = serviceDTOSet.stream().map(ServiceDTO::getId).collect(Collectors.toSet());
 
@@ -46,7 +46,7 @@ public class BookingServiceImpl implements BookingService {
         newBooking.setStatus(BookingStatus.PENDING);
         newBooking.setStartTime(booking.getStartTime());
         newBooking.setEndTime(booking.getEndTime());
-        newBooking.setTotalPrice(totalPrince);
+        newBooking.setTotalPrice(totalPrice);
 
         return bookingRepository.save(newBooking);
     }
@@ -56,15 +56,16 @@ public class BookingServiceImpl implements BookingService {
 
         List<Booking> existingBookings = getBookingsBySalon(salonDTO.getId());
 
-        LocalTime OpenTime = salonDTO.getOpenTime().toLocalTime();
-        LocalDateTime salonOpenTime = LocalDateTime.of(bookingStartTime.toLocalDate(), OpenTime);
+        LocalTime openTime = salonDTO.getOpenTime().toLocalTime();
+        LocalTime closeTime = salonDTO.getCloseTime().toLocalTime();
 
-        LocalTime CloseTime = salonDTO.getOpenTime().toLocalTime();
-        LocalDateTime salonCloseTime = LocalDateTime.of(bookingStartTime.toLocalDate(), CloseTime);
+        LocalDate bookingDate = bookingStartTime.toLocalDate();
+
+        LocalDateTime salonOpenTime = LocalDateTime.of(bookingDate, openTime);
+        LocalDateTime salonCloseTime = LocalDateTime.of(bookingDate, closeTime);
 
         if (bookingStartTime.isBefore(salonOpenTime) || bookingEndTime.isAfter(salonCloseTime)) {
             throw new Exception("Booking time must be within salon's working hours");
-
         }
 
         for (Booking existingBooking : existingBookings) {
